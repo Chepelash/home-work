@@ -30,4 +30,19 @@ class CalculatorTest {
     void classHasSevenMethods(){
         assertEquals(7,Calculator.class.getMethods().length-Object.class.getMethods().length);
     }
+
+    @Test
+    void getReminder() {
+        assertEquals(0, Calculator.getReminder(9, 3));
+    }
+
+    @Test
+    void getPower() {
+        assertEquals(27, Calculator.getPower(3, 3));
+    }
+
+    @Test
+    void getPowerOfTen() {
+        assertEquals(1000, Calculator.getPowerOfTen(3));
+    }
 }

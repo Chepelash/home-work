@@ -17,23 +17,45 @@ import java.util.regex.Pattern;
 public class AccountRepositoryImpl implements AccountRepository {
     private String fpath;
 
-    private Map<Long, Set<Account>> parseFile(@NotNull String fpath) throws FileNotFoundException {
-
-        Map<Long, Set<Account>> map = new HashMap();  // dictionary <key = clientId, value = Set<Account>>
-
+    /**
+     *
+     * @param fpath - path to file
+     * @return null - if IOException happened;
+     *         String with file content.
+     * @throws FileNotFoundException - if the file does not exist,
+     *         is a directory rather than a regular file, or for some other reason cannot be opened for reading
+     */
+    private String readFileToString(String fpath) throws FileNotFoundException{
         // FileInputStream(file) throws FileNotFoundException if the file does not exist,
         // is a directory rather than a regular file, or for some other reason cannot be opened for reading
         StringBuilder sb = new StringBuilder();
         InputStream inputStream = new FileInputStream(fpath);
         try{
-            // read file into string
             int content;
             while((content = inputStream.read()) != -1)
                 sb.append((char) content);
         } catch (IOException e){
+            // read error
             return null;
         }
-        String fileContent = sb.toString();
+        return sb.toString();
+    }
+
+    /**
+     *
+     * @param fpath - path to Accounts file
+     * @return null - if reading error happened;
+     *         Map<Long clientIds, Set<Account> accounts> - accounts contains Account entries with number
+     * @throws FileNotFoundException - if the file does not exist,
+     *         is a directory rather than a regular file, or for some other reason cannot be opened for reading
+     */
+    private Map<Long, Set<Account>> parseFile(@NotNull String fpath) throws FileNotFoundException {
+
+        Map<Long, Set<Account>> map = new HashMap();  // dictionary <key = clientId, value = Set<Account>>
+
+        String fileContent = readFileToString(fpath);
+        if(fileContent == null)
+            return null;
         // parse string and fill map
         String[] entries = fileContent.split("},");
         Pattern pattern = Pattern.compile("\"clientId\":\\s?(?<clientId>\\d+),\\s+\"number\":\\s?\"(?<number>\\S+)\"");

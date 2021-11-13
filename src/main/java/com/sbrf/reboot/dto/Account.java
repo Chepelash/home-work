@@ -1,4 +1,4 @@
-package com.sbrf.reboot.service;
+package com.sbrf.reboot.dto;
 
 import lombok.AllArgsConstructor;
 

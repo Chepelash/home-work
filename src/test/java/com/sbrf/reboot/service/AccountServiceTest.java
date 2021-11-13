@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void bookExist() {
+    void bookExist() throws FileNotFoundException {
         Account account = new Account("ACC1234NUM");
         Set<Account> accounts = new HashSet();
         accounts.add(account);
@@ -40,7 +41,7 @@ class AccountServiceTest {
     }
 
     @Test
-    void bookNotExist() {
+    void bookNotExist() throws FileNotFoundException {
         Set<Account> accounts = new HashSet();
         accounts.add(new Account("ACC1234NUM"));
 

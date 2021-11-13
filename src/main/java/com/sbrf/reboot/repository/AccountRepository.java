@@ -2,8 +2,9 @@ package com.sbrf.reboot.repository;
 
 import com.sbrf.reboot.dto.Account;
 
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 public interface AccountRepository {
-    Set<Account> getAllAccountsByClientId(long id);
+    Set<Account> getAllAccountsByClientId(long id) throws FileNotFoundException;
 }

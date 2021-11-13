@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AccountRepositoryImplTest {
 
-    AccountRepository accountRepository;
+    AccountRepositoryImpl accountRepository;
 
 
     @Test

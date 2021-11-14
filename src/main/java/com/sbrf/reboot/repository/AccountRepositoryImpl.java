@@ -111,12 +111,12 @@ public class AccountRepositoryImpl implements AccountRepository {
         for (Long key: keySet) {
             Set<Account> accounts = accountMap.get(key);
             for(Account account: accounts){
-                sb.append("\n{\n");
-                sb.append("\"" + CLIENT_ID_TAG + "\": ");
+                sb.append("\n  {\n");
+                sb.append("    \"" + CLIENT_ID_TAG + "\": ");
                 sb.append(key.toString()).append(",\n");
-                sb.append("\"" + NUMBER_TAG + "\": ");
+                sb.append("    \"" + NUMBER_TAG + "\": ");
                 sb.append("\"").append(account.getNumber()).append("\"\n");
-                sb.append("},");
+                sb.append("  },");
             }
         }
         sb.append("\n]");

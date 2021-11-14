@@ -15,6 +15,11 @@ import java.util.regex.Pattern;
 
 @AllArgsConstructor
 public class AccountRepositoryImpl implements AccountRepository {
+    private final String CLIENT_ID_TAG = "clientId";
+    private final String NUMBER_TAG = "number";
+    private final String PATTERN = "\"" + CLIENT_ID_TAG + "\":\\s?(?<" +
+                                   CLIENT_ID_TAG + ">\\d+),\\s+\"" + NUMBER_TAG +
+                                   "\":\\s?\"(?<" + NUMBER_TAG + ">\\S+)\"";
     private String fpath;
 
     /**
@@ -58,13 +63,13 @@ public class AccountRepositoryImpl implements AccountRepository {
             return null;
         // parse string and fill map
         String[] entries = fileContent.split("},");
-        Pattern pattern = Pattern.compile("\"clientId\":\\s?(?<clientId>\\d+),\\s+\"number\":\\s?\"(?<number>\\S+)\"");
+        Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher;
         for(String entry: entries){
             matcher = pattern.matcher(entry);
             if(matcher.find()){
-                Long clientId = Long.parseLong(matcher.group("clientId"));
-                String number = matcher.group("number");
+                Long clientId = Long.parseLong(matcher.group(CLIENT_ID_TAG));
+                String number = matcher.group(NUMBER_TAG);
                 if(map.containsKey(clientId)){
                     // clientId exists
                     // get old value

@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 
 import java.io.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,13 +37,13 @@ public class AccountRepositoryImpl implements AccountRepository {
         // FileInputStream(file) throws FileNotFoundException if the file does not exist,
         // is a directory rather than a regular file, or for some other reason cannot be opened for reading
         StringBuilder sb = new StringBuilder();
-        InputStream inputStream = new FileInputStream(fpath);
-        try{
+        try(InputStream inputStream = new FileInputStream(fpath)){
             int content;
             while((content = inputStream.read()) != -1)
                 sb.append((char) content);
         } catch (IOException e){
-            // read error
+            if(e.getClass().equals(FileNotFoundException.class))
+                throw new FileNotFoundException();
             return null;
         }
         return sb.toString();
@@ -60,7 +63,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
         String fileContent = readFileToString(fpath);
         if(fileContent == null)
-            return null;
+            return map;  // empty hash map
         // parse string and fill map
         String[] entries = fileContent.split("},");
         Pattern pattern = Pattern.compile(PATTERN);
@@ -90,14 +93,77 @@ public class AccountRepositoryImpl implements AccountRepository {
         return map;
     }
 
+    private void writeDocument(String fpath, String stringToWrite){
+        Path path = Paths.get(fpath);
+
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+            writer.write(stringToWrite);
+        } catch (IOException e){
+            // TODO
+            e.printStackTrace();
+        }
+    }
+
+    private String formDocument(Map<Long, Set<Account>> accountMap){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Set<Long> keySet = accountMap.keySet();
+        for (Long key: keySet) {
+            Set<Account> accounts = accountMap.get(key);
+            for(Account account: accounts){
+                sb.append("\n{\n");
+                sb.append("\"" + CLIENT_ID_TAG + "\": ");
+                sb.append(key.toString()).append(",\n");
+                sb.append("\"" + NUMBER_TAG + "\": ");
+                sb.append("\"").append(account.getNumber()).append("\"\n");
+                sb.append("},");
+            }
+        }
+        sb.append("\n]");
+        return sb.toString();
+    }
+
     @Override
     public Set<Account> getAllAccountsByClientId(long id) throws FileNotFoundException {
         // parse file
         Map<Long, Set<Account>> accountMap = parseFile(this.fpath);
 
         // get set<account> and return it
-        if(accountMap == null)
-            return null;
-        return accountMap.get(id);
+        return accountMap.get(id);  // if key not found returns null
     }
+
+    /**
+     *
+     * @param id - client's id
+     * @param oldNumber - account number to change
+     * @param newNumber - new account number
+     * @throws NoSuchFieldException - if id or oldNumber are not found
+     * @throws FileNotFoundException - if the file does not exist,
+     *          is a directory rather than a regular file, or for some other reason cannot be opened for reading
+     */
+    public void updateClientNumber(long id, String oldNumber, String newNumber) throws NoSuchFieldException,
+                                                                                       FileNotFoundException {
+        // parse file
+        Map<Long, Set<Account>> accountMap = parseFile(this.fpath);
+        // find account and change it
+        if(!accountMap.containsKey(id))
+            throw new NoSuchFieldException("Client id not found");
+        Set<Account> accounts = accountMap.get(id);
+        boolean foundAccountNumber = false;
+        for(Account account: accounts){
+            if(account.getNumber().equals(oldNumber)){
+                account.setNumber(newNumber);
+                foundAccountNumber = true;
+                break;
+            }
+        }
+        if(!foundAccountNumber)
+            throw new NoSuchFieldException("Account number not found");
+        // change map
+        accountMap.replace(id, accounts);
+        // write file
+        String stringToWrite = formDocument(accountMap);
+        writeDocument(this.fpath, stringToWrite);
+    }
+
 }

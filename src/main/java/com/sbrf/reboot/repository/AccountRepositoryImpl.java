@@ -115,6 +115,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                 sb.append("  },");
             }
         }
+        sb.setLength(sb.length() - 1); // remove last ","
         sb.append("\n]");
         return sb.toString();
     }

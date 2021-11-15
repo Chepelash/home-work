@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
 public class AccountRepositoryImpl implements AccountRepository {
     private final String CLIENT_ID_TAG = "clientId";
     private final String NUMBER_TAG = "number";
-    private final String PATTERN = "\"" + CLIENT_ID_TAG + "\":\\s?(?<" +
-                                   CLIENT_ID_TAG + ">\\d+),\\s+\"" + NUMBER_TAG +
-                                   "\":\\s?\"(?<" + NUMBER_TAG + ">\\S+)\"";
+    private final String PATTERN = "\\{\\s*\"clientId\":\\s*(?<" +
+                                    CLIENT_ID_TAG + ">\\d+),\\s*\"number\":\\s*\"(?<" +
+                                    NUMBER_TAG + ">\\S+)\"\\s*}";
     private String fpath;
 
     /**
@@ -65,31 +65,27 @@ public class AccountRepositoryImpl implements AccountRepository {
         if(fileContent == null)
             return map;  // empty hash map
         // parse string and fill map
-        String[] entries = fileContent.split("},");
         Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher;
-        for(String entry: entries){
-            matcher = pattern.matcher(entry);
-            if(matcher.find()){
-                Long clientId = Long.parseLong(matcher.group(CLIENT_ID_TAG));
-                String number = matcher.group(NUMBER_TAG);
-                if(map.containsKey(clientId)){
-                    // clientId exists
-                    // get old value
-                    Set<Account> accounts = map.get(clientId);
-                    // add new number
-                    accounts.add(new Account(number));
-                    // replace
-                    map.replace(clientId, accounts);
-                } else {
-                    // add new cliendId
-                    Set<Account> accounts = new HashSet();
-                    accounts.add(new Account(number));
-                    map.put(clientId, accounts);
-                }
+        matcher = pattern.matcher(fileContent);
+        while(matcher.find()){
+            Long clientId = Long.parseLong(matcher.group(CLIENT_ID_TAG));
+            String number = matcher.group(NUMBER_TAG);
+            if(map.containsKey(clientId)){
+                // clientId exists
+                // get old value
+                Set<Account> accounts = map.get(clientId);
+                // add new number
+                accounts.add(new Account(number));
+                // replace
+                map.replace(clientId, accounts);
+            } else {
+                // add new cliendId
+                Set<Account> accounts = new HashSet();
+                accounts.add(new Account(number));
+                map.put(clientId, accounts);
             }
         }
-
         return map;
     }
 

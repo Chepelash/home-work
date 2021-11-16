@@ -15,29 +15,13 @@ class CassetteTest {
 
     @Test
     void getCountBanknotes() {
-        OneHundred oneHundred = new OneHundred();
-
-        Cassette<OneHundred> cassette = new Cassette<>(new ArrayList<OneHundred>() {{
-            add(oneHundred);
-//            add(new OneThousand()); //it will not compile
-//            add(new Banknote()); //it will not compile
-        }});
-
-        Assertions.assertEquals(1, cassette.getCountBanknotes());
-    }
-
-    @Test
-    void getCountThreeBanknotes() {
-        OneThousand oneThousand = new OneThousand();
-
-        Cassette<OneThousand> cassette = new Cassette<>(new ArrayList<OneThousand>() {{
-            add(oneThousand);
-            add(oneThousand);
-            add(oneThousand);
-//            add(new OneHundred()); //it will not compile
-//            add(new Banknote()); //it will not compile
+        Cassette<Banknote> cassette = new Cassette<>(new ArrayList<Banknote>() {{
+            add(new OneHundred());
+            add(new OneThousand());
+            add(new Banknote());
         }});
 
         Assertions.assertEquals(3, cassette.getCountBanknotes());
     }
+
 }

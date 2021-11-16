@@ -25,4 +25,19 @@ class CassetteTest {
 
         Assertions.assertEquals(1, cassette.getCountBanknotes());
     }
+
+    @Test
+    void getCountThreeBanknotes() {
+        OneThousand oneThousand = new OneThousand();
+
+        Cassette<OneThousand> cassette = new Cassette<>(new ArrayList<OneThousand>() {{
+            add(oneThousand);
+            add(oneThousand);
+            add(oneThousand);
+//            add(new OneHundred()); //it will not compile
+//            add(new Banknote()); //it will not compile
+        }});
+
+        Assertions.assertEquals(3, cassette.getCountBanknotes());
+    }
 }

@@ -15,7 +15,7 @@ public class AccountService {
     public boolean isAccountExist(long id, Account account) {
         Set<Account> accounts;
         try {
-            accounts = this.accountRepository.getAllAccountsByClientId(id);
+            accounts = accountRepository.getAllAccountsByClientId(id);
         } catch (FileNotFoundException e){
             return false;
         }

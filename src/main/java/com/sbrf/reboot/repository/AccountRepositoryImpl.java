@@ -62,7 +62,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         Map<Long, Set<Account>> map = new HashMap();  // dictionary <key = clientId, value = Set<Account>>
 
         String fileContent = readFileToString(fpath);
-        if(fileContent == null)
+        if(fileContent.isEmpty())
             return map;  // empty hash map
         // parse string and fill map
         Pattern pattern = Pattern.compile(PATTERN);

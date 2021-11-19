@@ -20,9 +20,9 @@ import java.util.regex.Pattern;
 public class AccountRepositoryImpl implements AccountRepository {
     private final String CLIENT_ID_TAG = "clientId";
     private final String NUMBER_TAG = "number";
-    private final String PATTERN = "\\{\\s*\"clientId\":\\s*(?<" +
+    private final Pattern PATTERN = Pattern.compile("\\{\\s*\"clientId\":\\s*(?<" +
                                     CLIENT_ID_TAG + ">\\d+),\\s*\"number\":\\s*\"(?<" +
-                                    NUMBER_TAG + ">\\S+)\"\\s*}";
+                                    NUMBER_TAG + ">\\S+)\"\\s*}");
     private String fpath;
 
     /**
@@ -65,9 +65,8 @@ public class AccountRepositoryImpl implements AccountRepository {
         if(fileContent.isEmpty())
             return map;  // empty hash map
         // parse string and fill map
-        Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher;
-        matcher = pattern.matcher(fileContent);
+        matcher = PATTERN.matcher(fileContent);
         while(matcher.find()){
             Long clientId = Long.parseLong(matcher.group(CLIENT_ID_TAG));
             String number = matcher.group(NUMBER_TAG);

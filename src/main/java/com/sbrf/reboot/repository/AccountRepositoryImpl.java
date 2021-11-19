@@ -88,15 +88,15 @@ public class AccountRepositoryImpl implements AccountRepository {
         return map;
     }
 
-    private void writeDocument(String fpath, String stringToWrite){
+    private boolean writeDocument(String fpath, String stringToWrite){
         Path path = Paths.get(fpath);
 
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(stringToWrite);
         } catch (IOException e){
-            // TODO
-            e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     private String formDocument(Map<Long, Set<Account>> accountMap){
@@ -138,7 +138,8 @@ public class AccountRepositoryImpl implements AccountRepository {
      *          is a directory rather than a regular file, or for some other reason cannot be opened for reading
      */
     public void updateClientNumber(long id, String oldNumber, String newNumber) throws NoSuchFieldException,
-                                                                                       FileNotFoundException {
+                                                                                       FileNotFoundException,
+                                                                                       IOException {
         // parse file
         Map<Long, Set<Account>> accountMap = parseFile(this.fpath);
         // find account and change it
@@ -159,7 +160,8 @@ public class AccountRepositoryImpl implements AccountRepository {
         accountMap.replace(id, accounts);
         // write file
         String stringToWrite = formDocument(accountMap);
-        writeDocument(this.fpath, stringToWrite);
+        if(!writeDocument(this.fpath, stringToWrite))
+            throw new IOException("Cannot write file");
     }
 
 }

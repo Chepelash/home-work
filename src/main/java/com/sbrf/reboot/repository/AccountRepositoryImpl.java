@@ -41,10 +41,10 @@ public class AccountRepositoryImpl implements AccountRepository {
             int content;
             while((content = inputStream.read()) != -1)
                 sb.append((char) content);
-        } catch (IOException e){
-            if(e.getClass().equals(FileNotFoundException.class))
-                throw new FileNotFoundException();
-            return null;
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException();
+        } catch (IOException e) {
+            return "";
         }
         return sb.toString();
     }

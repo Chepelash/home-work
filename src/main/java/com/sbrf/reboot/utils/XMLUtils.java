@@ -12,17 +12,14 @@ import java.io.Serializable;
 public class XMLUtils {
 
     public static String toXML(Serializable serializable) throws JsonProcessingException {
-        ObjectMapper mapper = new XmlMapper();
-        return mapper.writeValueAsString(serializable);
+        return new XmlMapper().writeValueAsString(serializable);
     }
 
     public static Request XMLtoRequest(String s) throws JsonProcessingException {
-        ObjectMapper mapper = new XmlMapper();
-        return mapper.readValue(s, Request.class);
+        return new XmlMapper().readValue(s, Request.class);
     }
 
     public static Response XMLtoResponse(String s) throws JsonProcessingException {
-        ObjectMapper mapper = new XmlMapper();
-        return mapper.readValue(s, Response.class);
+        return new XmlMapper().readValue(s, Response.class);
     }
 }

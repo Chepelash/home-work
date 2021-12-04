@@ -10,17 +10,14 @@ import java.io.Serializable;
 
 public class JSONUtils {
     public static String toJSON(Serializable serializable) throws JsonProcessingException {
-        ObjectMapper mapper = new JsonMapper();
-        return mapper.writeValueAsString(serializable);
+        return new JsonMapper().writeValueAsString(serializable);
     }
 
     public static Request JSONtoRequest(String s) throws JsonProcessingException {
-        ObjectMapper mapper = new JsonMapper();
-        return mapper.readValue(s, Request.class);
+        return new JsonMapper().readValue(s, Request.class);
     }
 
     public static Response JSONtoResponse(String s) throws JsonProcessingException {
-        ObjectMapper mapper = new JsonMapper();
-        return mapper.readValue(s, Response.class);
+        return new JsonMapper().readValue(s, Response.class);
     }
 }

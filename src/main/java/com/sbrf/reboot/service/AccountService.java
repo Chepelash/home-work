@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
@@ -34,7 +35,13 @@ public class AccountService {
                 .orElse(Account.builder().clientId(0L).id(0L).balance(BigDecimal.ZERO).build());
     }
 
-    public Set getAllAccountsByDateMoreThen(long l, LocalDate minusDays) {
-        return null;
+    public Set getAllAccountsByDateMoreThen(long clientId, LocalDate minusDays) throws FileNotFoundException, NoSuchFieldException {
+        Set<Account> accounts = accountRepository.getAllAccountsByClientId(clientId);
+        if(accounts == null)
+            throw new NoSuchFieldException("No accounts found");
+        return accounts.stream()
+                .filter(account -> account.getCreateDate().
+                        isAfter(minusDays) || account.getCreateDate().isEqual(minusDays))
+                .collect(Collectors.toSet());
     }
 }

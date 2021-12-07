@@ -5,6 +5,7 @@ import com.sbrf.reboot.repository.AccountRepository;
 import lombok.AllArgsConstructor;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,5 +21,13 @@ public class AccountService {
             return false;
         }
         return accounts.contains(account);
+    }
+
+    public Account getMaxAccountBalance(long l) {
+        return null;
+    }
+
+    public Set getAllAccountsByDateMoreThen(long l, LocalDate minusDays) {
+        return null;
     }
 }
